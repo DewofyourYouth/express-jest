@@ -11,7 +11,7 @@ router.get("/", (req, res) => {
 });
 
 router.post("/add", (req, res) => {
-  let newCheese = req.body;
+  const newCheese = req.body;
   if (cheeseList.map((cheese) => cheese.id).includes(newCheese.id)) {
     res.status(409);
     res.send({
@@ -27,6 +27,14 @@ router.post("/add", (req, res) => {
     res.status(400);
     res.send({ message: "Invalid input" });
   }
+});
+
+router.delete("/remove/:cheeseId/", (req, res) => {
+  const { cheeseId } = req.params;
+  cheeseList = cheeseList.filter((cheese) => cheese.id !== parseInt(cheeseId));
+  res.send({
+    message: `Cheese with id of ${cheeseId} deleted!`,
+  });
 });
 
 module.exports = router;

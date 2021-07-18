@@ -1,5 +1,10 @@
+const express = require("express");
 const request = require("supertest");
-const app = require("../server");
+const cheeses = require("../server/routes/cheese");
+
+const app = express();
+app.use(express.json());
+app.use("/cheeses", cheeses);
 
 describe("Test the '/cheeses/add' path", () => {
   test("'/cheeses/add/' adds a cheese", async () => {
@@ -27,7 +32,7 @@ describe("Test the '/cheeses/add' path", () => {
     expect(response03.statusCode).toBe(400);
   });
 
-  test("'/cheeses' gets all the cheeses added to 'cheese/add' endpoint", async () => {
+  test("I can't add a cheese with the same id twice", async () => {
     const addCheddar = await request(app)
       .post("/cheeses/add")
       .send({ id: 1, name: "cheddar", pricePerKilo: 4.95 });
@@ -40,6 +45,11 @@ describe("Test the '/cheeses/add' path", () => {
       .send({ id: 2, name: "brie", pricePerKilo: 5.49 });
     expect(addBrie.statusCode).toBe(201);
     expect(addBrie.body.message).toBe("brie was added to the list of cheeses!");
+  });
+});
+
+describe("The '/cheeses' endpoint", () => {
+  test("'/cheeses' gets all the cheeses added to 'cheese/add' endpoint", async () => {
     const response = await request(app).get("/cheeses");
     expect(response.body).toEqual([
       { id: 1, name: "cheddar", pricePerKilo: 4.95 },
@@ -48,11 +58,11 @@ describe("Test the '/cheeses/add' path", () => {
   });
 });
 
-describe("Test the '/cheeses/delete/:id' path", () => {
+describe("Test the '/cheeses/remove/:id/' path", () => {
   test("I can delete a cheese by specifying an id", async () => {
-    const deleteBrie = await request(app).get("/cheeses/delete/2");
+    const deleteBrie = await request(app).delete("/cheeses/remove/2");
     expect(deleteBrie.statusCode).toBe(200);
-    expect(deleteBrie.body.message).toBe("Cheese(id=2, name='brie') deleted!");
+    expect(deleteBrie.body.message).toBe("Cheese with id of 2 deleted!");
     const response = await request(app).get("/cheeses");
     expect(response.body).toEqual([
       { id: 1, name: "cheddar", pricePerKilo: 4.95 },
