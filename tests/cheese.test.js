@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../server");
 
-describe("Test the '/cheeses' path", () => {
+describe("Test the '/cheeses/add' path", () => {
   test("'/cheeses/add/' adds a cheese", async () => {
     const response = await request(app)
       .post("/cheeses/add")
@@ -44,6 +44,18 @@ describe("Test the '/cheeses' path", () => {
     expect(response.body).toEqual([
       { id: 1, name: "cheddar", pricePerKilo: 4.95 },
       { id: 2, name: "brie", pricePerKilo: 5.49 },
+    ]);
+  });
+});
+
+describe("Test the '/cheeses/delete/:id' path", () => {
+  test("I can delete a cheese by specifying an id", async () => {
+    const deleteBrie = await request(app).get("/cheeses/delete/2");
+    expect(deleteBrie.statusCode).toBe(200);
+    expect(deleteBrie.body.message).toBe("Cheese(id=2, name='brie') deleted!");
+    const response = await request(app).get("/cheeses");
+    expect(response.body).toEqual([
+      { id: 1, name: "cheddar", pricePerKilo: 4.95 },
     ]);
   });
 });
