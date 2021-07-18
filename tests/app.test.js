@@ -1,8 +1,7 @@
-const { response } = require("express");
 const request = require("supertest");
 const app = require("../server");
 
-describe("Test the / path", () => {
+describe("Test the '/' path", () => {
   test("It should respond to the GET method", async () => {
     const response = await request(app).get("/");
     expect(response.statusCode).toBe(200);
@@ -13,7 +12,7 @@ describe("Test the / path", () => {
   });
 });
 
-describe("Test the /add/:a/:b path", () => {
+describe("Test the '/add/:a/:b' path", () => {
   test("It should respond to the GET method", async () => {
     const response = await request(app).get("/add/1/2/");
     expect(response.statusCode).toBe(200);
