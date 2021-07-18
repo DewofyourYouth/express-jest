@@ -12,11 +12,19 @@ describe("Test the '/cheeses' path", () => {
     );
   });
 
-  test("can't add a cheese without proper fields", async () => {
-    const response = await request(app)
+  test("can't add a cheese without all the proper fields", async () => {
+    const response01 = await request(app)
       .post("/cheeses/add")
       .send({ cheese: { id: 2, name: "brie", price: 4.95 } });
-    expect(response.statusCode).toBe(400);
+    expect(response01.statusCode).toBe(400);
+    const response02 = await request(app)
+      .post("/cheeses/add")
+      .send({ cheese: { name: "brie", pricePerKilo: 4.95 } });
+    expect(response02.statusCode).toBe(400);
+    const response03 = await request(app)
+      .post("/cheeses/add")
+      .send({ cheese: { id: 2, cheeseName: "brie", pricePerKilo: 4.95 } });
+    expect(response03.statusCode).toBe(400);
   });
 
   test("'/cheeses' gets all the cheeses added to 'cheese/add' endpoint", async () => {
